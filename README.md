@@ -8,3 +8,11 @@ Generate diary template.
 
 ### show
 Show diary of specified date.
+
+## Developing
+
+### Unit test
+Run the following command.
+```shell
+$ go test -v <package name>
+```

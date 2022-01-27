@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"mydiary/pkg/initialize"
 
 	"github.com/spf13/cobra"
 )
@@ -13,6 +14,7 @@ func BuildInitCmd() *cobra.Command {
 		Short: "Generate diary template",
 		Run: func(c *cobra.Command, args []string) {
 			fmt.Println(year)
+			fmt.Println(initialize.IsLeapYear(year))
 		},
 	}
 	cmd.Flags().Int64Var(&year, "year", 0, "Year")
