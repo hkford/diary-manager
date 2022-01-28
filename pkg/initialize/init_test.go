@@ -21,3 +21,15 @@ func TestIsLeapYear(t *testing.T) {
 		t.Fatal("failed test year=2100")
 	}
 }
+
+func TestGetDate(t *testing.T) {
+	var result string
+	result = GetDate(2022, 1, 28)
+	if result != "Fri" {
+		t.Fatal("failed test 2022/01/28")
+	}
+	result = GetDate(2020, 3, 9)
+	if result != "Mon" {
+		t.Fatal("failed test 2020/03/09")
+	}
+}
