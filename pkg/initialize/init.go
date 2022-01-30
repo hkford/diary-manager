@@ -3,8 +3,13 @@
 package initialize
 
 import (
+	"fmt"
 	"math"
 )
+
+var days = []string{"Sat", "Sun", "Mon", "Tue", "Wed", "Thur", "Fri"}
+var monthNames = []string{"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"}
+var dayLengths = []int64{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}
 
 func IsLeapYear(year int64) bool {
 	if year%400 == 0 {
@@ -26,7 +31,7 @@ func GetDate(y int64, m int64, d int64) string {
 		m += 12
 		y -= 1
 	}
-	days := []string{"Sat", "Sun", "Mon", "Tue", "Wed", "Thur", "Fri"}
+
 	second_term := int64(math.Floor(float64(26 * (m + 1) / 10)))
 	Y := y % 100
 	forth_term := int64(math.Floor(float64(Y / 4)))
@@ -34,4 +39,9 @@ func GetDate(y int64, m int64, d int64) string {
 	Gamma := 5*C + int64(math.Floor(float64(C/4)))
 	h := (d + second_term + Y + forth_term + Gamma) % 7
 	return days[h]
+}
+
+func GenerateDayFormat(y int64, m int64, d int64) string {
+	f := fmt.Sprintf("%v,%v,%02v,%v\n\n", y, monthNames[m-1], d, GetDate(y, m, d))
+	return f
 }

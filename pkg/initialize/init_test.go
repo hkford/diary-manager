@@ -33,3 +33,11 @@ func TestGetDate(t *testing.T) {
 		t.Fatal("failed GetDate 2020/03/09")
 	}
 }
+
+func TestGenerateDayFormat(t *testing.T) {
+	var result string
+	result = GenerateDayFormat(2022, 1, 1)
+	if result != "2022,January,01,Sat\n\n" {
+		t.Fatal("failed GenerateDayformat(2022,1,1)")
+	}
+}
