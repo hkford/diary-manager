@@ -9,9 +9,9 @@ import (
 func TestCreate(t *testing.T) {
 	fs := afero.NewMemMapFs()
 	ws := Workspace{
-		diaryDir: "2020",
-		isLeap:   true,
-		fs:       &afero.Afero{Fs: fs},
+		DiaryDir: "2020",
+		IsLeap:   true,
+		Fs:       &afero.Afero{Fs: fs},
 	}
 
 	err := ws.Create()

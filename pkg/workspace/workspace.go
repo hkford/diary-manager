@@ -7,18 +7,18 @@ import (
 )
 
 type Workspace struct {
-	diaryDir string
-	isLeap   bool
-	fs       *afero.Afero
+	DiaryDir string
+	IsLeap   bool
+	Fs       *afero.Afero
 }
 
 // Create creates diary directory if it does not already exist.
 func (ws *Workspace) Create() error {
-	err := ws.fs.MkdirAll(ws.diaryDir, 0755)
+	err := ws.Fs.MkdirAll(ws.DiaryDir, 0755)
 	if err != nil {
 		return err
 	} else {
-		fmt.Printf("Create %v directory", ws.diaryDir)
+		fmt.Printf("Create %v directory\n", ws.DiaryDir)
 		return nil
 	}
 }
