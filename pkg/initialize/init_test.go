@@ -1,6 +1,11 @@
 package initialize
 
-import "testing"
+import (
+	"mydiary/pkg/workspace"
+	"testing"
+
+	"github.com/spf13/afero"
+)
 
 func TestIsLeapYear(t *testing.T) {
 	var result bool
@@ -39,5 +44,24 @@ func TestGenerateDayFormat(t *testing.T) {
 	result = GenerateDayFormat(2022, 1, 1)
 	if result != "2022,January,01,Sat\n\n" {
 		t.Fatal("failed GenerateDayformat(2022,1,1)")
+	}
+}
+
+func TestWriteMonthTemplate(t *testing.T) {
+	fs := afero.NewMemMapFs()
+	ws := workspace.Workspace{
+		DiaryDir: "2020",
+		IsLeap:   true,
+		Fs:       &afero.Afero{Fs: fs},
+	}
+
+	err := ws.Create()
+	if err != nil {
+		t.Fatal("failed Create workspace")
+	}
+	WriteMonthTemplate(ws, int64(1))
+	_, err = fs.Open("2020/202001.txt")
+	if err != nil {
+		t.Fatal("Failed to write monthly template")
 	}
 }
