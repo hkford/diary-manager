@@ -17,5 +17,6 @@ This tool generates diary templates, shows diary of specified date.`,
 	}
 
 	cmd.AddCommand(BuildInitCmd())
+	cmd.AddCommand(BuildShowCmd())
 	return cmd
 }
