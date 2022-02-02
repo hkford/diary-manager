@@ -10,18 +10,6 @@ import (
 	"strconv"
 )
 
-func IsLeapYear(year int64) bool {
-	if year%400 == 0 {
-		return true
-	} else if year%100 == 0 {
-		return false
-	} else if year%4 == 0 {
-		return true
-	} else {
-		return false
-	}
-}
-
 // Get Gregorian calendar date using Zeller's congruence
 // https://en.wikipedia.org/wiki/Zeller%27s_congruence
 func GetDate(y int64, m int64, d int64) string {

@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"mydiary/pkg/initialize"
+	"mydiary/pkg/util"
 	"mydiary/pkg/workspace"
 	"strconv"
 
@@ -16,7 +17,7 @@ func BuildInitCmd() *cobra.Command {
 		Short: "Generate diary template",
 		Run: func(c *cobra.Command, args []string) {
 			var AppFs = afero.NewOsFs()
-			isLeap := initialize.IsLeapYear(year)
+			isLeap := util.IsLeapYear(year)
 			ws := workspace.Workspace{
 				DiaryDir: strconv.FormatInt(year, 10),
 				IsLeap:   isLeap,
