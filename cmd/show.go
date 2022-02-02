@@ -5,11 +5,11 @@ import (
 )
 
 func BuildShowCmd() *cobra.Command {
-	var date string
+	var date int64
 	cmd := &cobra.Command{
 		Use:   "show",
 		Short: "Show diary",
 	}
-	cmd.Flags().StringVar(&date, "date", "", "Date")
+	cmd.Flags().Int64Var(&date, "date", 0, "Date")
 	return cmd
 }
