@@ -5,13 +5,10 @@ package initialize
 import (
 	"fmt"
 	"math"
+	"mydiary/pkg/util"
 	"mydiary/pkg/workspace"
 	"strconv"
 )
-
-var days = []string{"Sat", "Sun", "Mon", "Tue", "Wed", "Thur", "Fri"}
-var monthNames = []string{"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"}
-var dayLengths = []int{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}
 
 func IsLeapYear(year int64) bool {
 	if year%400 == 0 {
@@ -40,11 +37,11 @@ func GetDate(y int64, m int64, d int64) string {
 	C := int64(math.Floor(float64(y / 100)))
 	Gamma := 5*C + int64(math.Floor(float64(C/4)))
 	h := (d + second_term + Y + forth_term + Gamma) % 7
-	return days[h]
+	return util.Days[h]
 }
 
 func GenerateDayFormat(y int64, m int64, d int64) string {
-	f := fmt.Sprintf("%v,%v,%02v,%v\n\n", y, monthNames[m-1], d, GetDate(y, m, d))
+	f := fmt.Sprintf("%v,%v,%02v,%v\n\n", y, util.MonthNames[m-1], d, GetDate(y, m, d))
 	return f
 }
 
@@ -54,7 +51,7 @@ func WriteMonthTemplate(ws workspace.Workspace, month int64) {
 	if err != nil {
 		fmt.Println("Failed to parse DiaryDir into int64")
 	}
-	days := dayLengths[month-1]
+	days := util.DayLengths[month-1]
 	if ws.IsLeap {
 		days += 1
 	}
