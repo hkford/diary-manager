@@ -1,6 +1,12 @@
 package show
 
-import "testing"
+import (
+	"mydiary/pkg/initialize"
+	"mydiary/pkg/workspace"
+	"testing"
+
+	"github.com/spf13/afero"
+)
 
 func TestValidateInput(t *testing.T) {
 	var result error
@@ -43,5 +49,37 @@ func TestValidateInput(t *testing.T) {
 	}
 	if date != expected {
 		t.Errorf("ValidateInput expects %v but %v", expected, date)
+	}
+}
+
+func TestOpenDiary(t *testing.T) {
+	var result bool
+	var date Date
+	fs := afero.NewMemMapFs()
+	ws := workspace.Workspace{
+		DiaryDir: "2020",
+		IsLeap:   true,
+		Fs:       &afero.Afero{Fs: fs},
+	}
+
+	err := ws.Create()
+	if err != nil {
+		t.Fatal("failed Create workspace")
+	}
+	initialize.WriteMonthTemplate(ws, int64(1))
+	date = Date{2020, 1, 29}
+	result = IsDiaryFileExists(ws, date)
+	if result != true {
+		t.Errorf("diaries/2020/202001.txt should exist")
+	}
+	date = Date{2020, 3, 1}
+	result = IsDiaryFileExists(ws, date)
+	if result != false {
+		t.Errorf("diaries/2020/202003.txt should not exist")
+	}
+	date = Date{2021, 2, 4}
+	result = IsDiaryFileExists(ws, date)
+	if result != false {
+		t.Errorf("diaries/2021/202102.txt should not exist")
 	}
 }

@@ -3,6 +3,9 @@ package show
 import (
 	"fmt"
 	"mydiary/pkg/util"
+	"mydiary/pkg/workspace"
+
+	"github.com/spf13/afero"
 )
 
 type Date struct {
@@ -46,4 +49,13 @@ func ValidateInput(x int64) (date Date, err error) {
 	}
 
 	return date, nil
+}
+
+func IsDiaryFileExists(ws workspace.Workspace, date Date) bool {
+	filename := fmt.Sprintf("diaries/%v/%v%02v.txt", date.y, date.y, date.m)
+	isDiaryExist, err := afero.Exists(ws.Fs, filename)
+	if err != nil {
+		fmt.Println("Failed to run afero.Exists")
+	}
+	return isDiaryExist
 }
