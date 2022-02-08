@@ -1,7 +1,9 @@
 package show
 
 import (
+	"fmt"
 	"mydiary/pkg/initialize"
+	"mydiary/pkg/util"
 	"mydiary/pkg/workspace"
 	"testing"
 
@@ -52,7 +54,7 @@ func TestValidateInput(t *testing.T) {
 	}
 }
 
-func TestOpenDiary(t *testing.T) {
+func TestIsDiaryFileExists(t *testing.T) {
 	var result bool
 	var date Date
 	fs := afero.NewMemMapFs()
@@ -81,5 +83,40 @@ func TestOpenDiary(t *testing.T) {
 	result = IsDiaryFileExists(ws, date)
 	if result != false {
 		t.Errorf("diaries/2021/202102.txt should not exist")
+	}
+}
+
+// Write test diary file of 2020/01
+func writeTestDiary(ws workspace.Workspace) {
+	var template = make([]byte, 0, 700)
+	days := util.DayLengths[1-1]
+	diaryOfJanuary1st := "2020,January,01,Wed\nFirst diary.\n\n"
+	template = append(template, []byte(diaryOfJanuary1st)...)
+	for d := 2; d <= days; d++ {
+		dayFormat := initialize.GenerateDayFormat(2020, 1, int64(d))
+		template = append(template, []byte(dayFormat)...)
+	}
+	filename := fmt.Sprintf("diaries/2020/202001.txt")
+	ws.Fs.WriteFile(filename, template, 0755)
+}
+
+func TestGetDiary(t *testing.T) {
+	var result string
+	fs := afero.NewMemMapFs()
+	ws := workspace.Workspace{
+		DiaryDir: "2020",
+		IsLeap:   true,
+		Fs:       &afero.Afero{Fs: fs},
+	}
+
+	err := ws.Create()
+	if err != nil {
+		t.Fatal("failed Create workspace")
+	}
+	writeTestDiary(ws)
+	date := Date{2020, 1, 1}
+	result, _ = GetDiary(ws, date)
+	if result != "2020,January,01,Wed\nFirst diary." {
+		t.Errorf("Got wrong diary: %v", result)
 	}
 }

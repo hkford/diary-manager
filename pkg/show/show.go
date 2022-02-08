@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"mydiary/pkg/util"
 	"mydiary/pkg/workspace"
+	"strings"
 
 	"github.com/spf13/afero"
 )
@@ -58,4 +59,25 @@ func IsDiaryFileExists(ws workspace.Workspace, date Date) bool {
 		fmt.Println("Failed to run afero.Exists")
 	}
 	return isDiaryExist
+}
+
+func GetDiary(ws workspace.Workspace, date Date) (string, error) {
+	filename := fmt.Sprintf("diaries/%v/%v%02v.txt", date.y, date.y, date.m)
+	diaryOfMonth, err := afero.ReadFile(ws.Fs, filename)
+	if err != nil {
+		fmt.Println("Failed to run afero.Readfile")
+	}
+	diaryOfDay, err := extractDiary(string(diaryOfMonth), date)
+	return diaryOfDay, err
+}
+
+func extractDiary(sentences string, date Date) (string, error) {
+	sentencesArray := strings.Split(sentences, "\n\n")
+	dayFormat := fmt.Sprintf("%v,%v,%02v", date.y, util.MonthNames[date.m-1], date.d)
+	for _, sentence := range sentencesArray {
+		if strings.HasPrefix(sentence, dayFormat) {
+			return sentence, nil
+		}
+	}
+	return "", fmt.Errorf("Could not find diary specified date")
 }
