@@ -40,7 +40,7 @@ func WriteMonthTemplate(ws workspace.Workspace, month int64) {
 		fmt.Println("Failed to parse DiaryDir into int64")
 	}
 	days := util.DayLengths[month-1]
-	if ws.IsLeap {
+	if ws.IsLeap && month == 2 {
 		days += 1
 	}
 	for d := 1; d <= days; d++ {
