@@ -47,7 +47,7 @@ func WriteMonthTemplate(ws workspace.Workspace, month int64) {
 		dayFormat := GenerateDayFormat(year, month, int64(d))
 		template = append(template, []byte(dayFormat)...)
 	}
-	filename := fmt.Sprintf("%v/%v%02v.txt", ws.DiaryDir, ws.DiaryDir, strconv.FormatInt(month, 10))
+	filename := fmt.Sprintf("diaries/%v/%v%02v.txt", ws.DiaryDir, ws.DiaryDir, strconv.FormatInt(month, 10))
 	ws.Fs.WriteFile(filename, template, 0755)
 }
 

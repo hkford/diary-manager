@@ -14,7 +14,8 @@ type Workspace struct {
 
 // Create creates diary directory if it does not already exist.
 func (ws *Workspace) Create() error {
-	err := ws.Fs.MkdirAll(ws.DiaryDir, 0755)
+	dirPath := fmt.Sprintf("diaries/%v", ws.DiaryDir)
+	err := ws.Fs.MkdirAll(dirPath, 0755)
 	if err != nil {
 		return err
 	} else {

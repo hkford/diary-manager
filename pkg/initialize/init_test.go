@@ -40,7 +40,7 @@ func TestWriteMonthTemplate(t *testing.T) {
 		t.Fatal("failed Create workspace")
 	}
 	WriteMonthTemplate(ws, int64(1))
-	_, err = fs.Open("2020/202001.txt")
+	_, err = fs.Open("diaries/2020/202001.txt")
 	if err != nil {
 		t.Fatal("Failed to write monthly template")
 	}
