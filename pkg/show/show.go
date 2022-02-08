@@ -10,9 +10,9 @@ import (
 )
 
 type Date struct {
-	y int64
-	m int64
-	d int64
+	Y int64
+	M int64
+	D int64
 }
 
 func ValidateInput(x int64) (date Date, err error) {
@@ -53,7 +53,7 @@ func ValidateInput(x int64) (date Date, err error) {
 }
 
 func IsDiaryFileExists(ws workspace.Workspace, date Date) bool {
-	filename := fmt.Sprintf("diaries/%v/%v%02v.txt", date.y, date.y, date.m)
+	filename := fmt.Sprintf("diaries/%v/%v%02v.txt", date.Y, date.Y, date.M)
 	isDiaryExist, err := afero.Exists(ws.Fs, filename)
 	if err != nil {
 		fmt.Println("Failed to run afero.Exists")
@@ -62,7 +62,7 @@ func IsDiaryFileExists(ws workspace.Workspace, date Date) bool {
 }
 
 func GetDiary(ws workspace.Workspace, date Date) (string, error) {
-	filename := fmt.Sprintf("diaries/%v/%v%02v.txt", date.y, date.y, date.m)
+	filename := fmt.Sprintf("diaries/%v/%v%02v.txt", date.Y, date.Y, date.M)
 	diaryOfMonth, err := afero.ReadFile(ws.Fs, filename)
 	if err != nil {
 		fmt.Println("Failed to run afero.Readfile")
@@ -73,7 +73,7 @@ func GetDiary(ws workspace.Workspace, date Date) (string, error) {
 
 func extractDiary(sentences string, date Date) (string, error) {
 	sentencesArray := strings.Split(sentences, "\n\n")
-	dayFormat := fmt.Sprintf("%v,%v,%02v", date.y, util.MonthNames[date.m-1], date.d)
+	dayFormat := fmt.Sprintf("%v,%v,%02v", date.Y, util.MonthNames[date.M-1], date.D)
 	for _, sentence := range sentencesArray {
 		if strings.HasPrefix(sentence, dayFormat) {
 			return sentence, nil
