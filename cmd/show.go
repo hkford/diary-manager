@@ -15,7 +15,11 @@ func BuildShowCmd() *cobra.Command {
 	var date int64
 	cmd := &cobra.Command{
 		Use:   "show",
-		Short: "Show diary",
+		Short: "Show diary of specified date.",
+		Long:  "Show diary of specified date.",
+		Example: `
+Show diary of 2020/01/01
+$ mydiary show --date 20200101`,
 		Run: func(c *cobra.Command, args []string) {
 			var AppFs = afero.NewOsFs()
 			date, err := show.ValidateInput(date)
@@ -40,6 +44,7 @@ func BuildShowCmd() *cobra.Command {
 			}
 		},
 	}
-	cmd.Flags().Int64Var(&date, "date", 0, "Date")
+	cmd.Flags().Int64Var(&date, "date", 0, "date to show diary")
+	cmd.MarkFlagRequired("date")
 	return cmd
 }

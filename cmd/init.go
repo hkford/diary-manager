@@ -14,7 +14,13 @@ func BuildInitCmd() *cobra.Command {
 	var year int64
 	cmd := &cobra.Command{
 		Use:   "init",
-		Short: "Generate diary template",
+		Short: "Generate diary template.",
+		Long: `
+Generate diary template.
+Diary template is a collection of text files like 2020/202001.txt`,
+		Example: `
+Generate diary template of 2020.
+$ mydiary init --year 2020`,
 		Run: func(c *cobra.Command, args []string) {
 			var AppFs = afero.NewOsFs()
 			isLeap := util.IsLeapYear(year)
@@ -27,6 +33,7 @@ func BuildInitCmd() *cobra.Command {
 			initialize.WriteYearTemplates(ws)
 		},
 	}
-	cmd.Flags().Int64Var(&year, "year", 0, "Year")
+	cmd.Flags().Int64Var(&year, "year", 0, "year of diary")
+	cmd.MarkFlagRequired("year")
 	return cmd
 }
