@@ -1,4 +1,5 @@
 # diary-manager
+[![test status](https://github.com/hkford/diary-manager/workflows/test/badge.svg)](https://github.com/hkford/diary-manager/actions)
 Diary manager written in Golang
 
 ## Usage
@@ -32,7 +33,7 @@ $ mydiary show --date 20200101
 This repo contains `Dockerfile` so it is easy to build the diary-manager using `Docker`, especially the VSCode Remote Containers extension.
 
 ### Unit test
-Run the following command.
+Run the following command. This run all tests in current directory and all of its subdirectories.
 ```shell
-$ go test -v <package name>
+$ go test -v ./...
 ```
