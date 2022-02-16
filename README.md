@@ -1,5 +1,5 @@
 # diary-manager
-[![test status](https://github.com/hkford/diary-manager/workflows/test/badge.svg)](https://github.com/hkford/diary-manager/actions)
+[![test status](https://github.com/hkford/diary-manager/actions/workflows/unittest.yml/badge.svg)](https://github.com/hkford/diary-manager/actions/workflows/unittest.yml)
 
 Diary manager written in Golang
 
