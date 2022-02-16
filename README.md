@@ -1,5 +1,6 @@
 # diary-manager
 [![test status](https://github.com/hkford/diary-manager/workflows/test/badge.svg)](https://github.com/hkford/diary-manager/actions)
+
 Diary manager written in Golang
 
 ## Usage
