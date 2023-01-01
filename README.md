@@ -30,11 +30,18 @@ $ mydiary show --date 20200101
 
 ## Developing
 
-### Build
-This repo contains `Dockerfile` so it is easy to build the diary-manager using `Docker`, especially the VSCode Remote Containers extension.
+### Coding
+This repo contains `Dockerfile` so it is easy to build the diary-manager using `Docker`, especially the VSCode Dev Containers extension.
 
 ### Unit test
 Run the following command. This run all tests in current directory and all of its subdirectories.
 ```shell
 $ go test -v ./...
+```
+
+### Cross compile
+If you use macOS and developing inside Docker containers, you need to cross-compile for macOS.
+
+```shell
+$ GOOS=darwin GOARCH=amd64 go build -o mydiary main.go
 ```
