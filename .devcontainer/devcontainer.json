@@ -8,7 +8,13 @@
 		"editor.defaultFormatter": "golang.go",
 		"go.toolsEnvVars": {
 			"GOPROXY": "direct"
-		}
+		},
+		"go.lintOnSave": true,
+		"go.lintTool": "golangci-lint",
+		"go.lintFlags": [
+    		"--disable-all",
+    		"--enable=govet,errcheck,staticcheck,gosimple"
+		],
 	},
 	"extensions": [
 		"golang.go"
