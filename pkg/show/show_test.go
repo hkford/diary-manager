@@ -1,7 +1,6 @@
 package show
 
 import (
-	"fmt"
 	"mydiary/pkg/initialize"
 	"mydiary/pkg/util"
 	"mydiary/pkg/workspace"
@@ -68,7 +67,10 @@ func TestIsDiaryFileExists(t *testing.T) {
 	if err != nil {
 		t.Fatal("failed Create workspace")
 	}
-	initialize.WriteMonthTemplate(ws, int64(1))
+	err = initialize.WriteMonthTemplate(ws, int64(1))
+	if err != nil {
+		t.Fatal("failed Create month template")
+	}
 	date = Date{2020, 1, 29}
 	result = IsDiaryFileExists(ws, date)
 	if result != true {
@@ -87,17 +89,20 @@ func TestIsDiaryFileExists(t *testing.T) {
 }
 
 // Write test diary file of 2020/01
-func writeTestDiary(ws workspace.Workspace) {
+func writeTestDiary(ws workspace.Workspace, t *testing.T) {
 	var template = make([]byte, 0, 700)
-	days := util.DayLengths[1-1]
+	days := util.DayLengths[0]
 	diaryOfJanuary1st := "2020,January,01,Wed\nFirst diary.\n\n"
 	template = append(template, []byte(diaryOfJanuary1st)...)
 	for d := 2; d <= days; d++ {
 		dayFormat := initialize.GenerateDayFormat(2020, 1, int64(d))
 		template = append(template, []byte(dayFormat)...)
 	}
-	filename := fmt.Sprintf("diaries/2020/202001.txt")
-	ws.Fs.WriteFile(filename, template, 0755)
+	filename := "diaries/2020/202001.txt"
+	err := ws.Fs.WriteFile(filename, template, 0755)
+	if err != nil {
+		t.Fatal("failed to generate test diary")
+	}
 }
 
 func TestGetDiary(t *testing.T) {
@@ -113,7 +118,7 @@ func TestGetDiary(t *testing.T) {
 	if err != nil {
 		t.Fatal("failed Create workspace")
 	}
-	writeTestDiary(ws)
+	writeTestDiary(ws, t)
 	date := Date{2020, 1, 1}
 	result, _ = GetDiary(ws, date)
 	if result != "2020,January,01,Wed\nFirst diary." {

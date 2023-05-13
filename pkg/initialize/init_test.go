@@ -20,8 +20,7 @@ func TestGetDate(t *testing.T) {
 }
 
 func TestGenerateDayFormat(t *testing.T) {
-	var result string
-	result = GenerateDayFormat(2022, 1, 1)
+	result := GenerateDayFormat(2022, 1, 1)
 	if result != "2022,January,01,Sat\n\n" {
 		t.Fatal("failed GenerateDayformat(2022,1,1)")
 	}
@@ -39,7 +38,10 @@ func TestWriteMonthTemplate(t *testing.T) {
 	if err != nil {
 		t.Fatal("failed Create workspace")
 	}
-	WriteMonthTemplate(ws, int64(1))
+	err = WriteMonthTemplate(ws, int64(1))
+	if err != nil {
+		t.Fatal("failed Create month template")
+	}
 	_, err = fs.Open("diaries/2020/202001.txt")
 	if err != nil {
 		t.Fatal("Failed to write monthly template")

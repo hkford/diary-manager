@@ -45,6 +45,6 @@ $ mydiary show --date 20200101`,
 		},
 	}
 	cmd.Flags().Int64Var(&date, "date", 0, "date to show diary")
-	cmd.MarkFlagRequired("date")
+	_ = cmd.MarkFlagRequired("date")
 	return cmd
 }

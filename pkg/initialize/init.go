@@ -19,11 +19,11 @@ func GetDate(y int64, m int64, d int64) string {
 		y -= 1
 	}
 
-	second_term := int64(math.Floor(float64(26 * (m + 1) / 10)))
+	second_term := int64(math.Floor((26 * float64(m+1) / 10)))
 	Y := y % 100
-	forth_term := int64(math.Floor(float64(Y / 4)))
-	C := int64(math.Floor(float64(y / 100)))
-	Gamma := 5*C + int64(math.Floor(float64(C/4)))
+	forth_term := int64(math.Floor(float64(Y) / 4))
+	C := int64(math.Floor(float64(y) / 100))
+	Gamma := 5*C + int64(math.Floor(float64(C)/4))
 	h := (d + second_term + Y + forth_term + Gamma) % 7
 	return util.Days[h]
 }
@@ -33,7 +33,7 @@ func GenerateDayFormat(y int64, m int64, d int64) string {
 	return f
 }
 
-func WriteMonthTemplate(ws workspace.Workspace, month int64) {
+func WriteMonthTemplate(ws workspace.Workspace, month int64) error {
 	var template = make([]byte, 0, 700)
 	year, err := strconv.ParseInt(ws.DiaryDir, 10, 64)
 	if err != nil {
@@ -48,11 +48,16 @@ func WriteMonthTemplate(ws workspace.Workspace, month int64) {
 		template = append(template, []byte(dayFormat)...)
 	}
 	filename := fmt.Sprintf("diaries/%v/%v%02v.txt", ws.DiaryDir, ws.DiaryDir, strconv.FormatInt(month, 10))
-	ws.Fs.WriteFile(filename, template, 0755)
+	err = ws.Fs.WriteFile(filename, template, 0755)
+	return err
 }
 
-func WriteYearTemplates(ws workspace.Workspace) {
+func WriteYearTemplates(ws workspace.Workspace) error {
 	for m := 1; m <= 12; m++ {
-		WriteMonthTemplate(ws, int64(m))
+		err := WriteMonthTemplate(ws, int64(m))
+		if err != nil {
+			return err
+		}
 	}
+	return nil
 }
