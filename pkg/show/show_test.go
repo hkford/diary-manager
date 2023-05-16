@@ -77,8 +77,8 @@ func TestValidateInput(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			got, err := ValidateInput(test.input)
 
-			if test.wantErr && (err != nil) {
-				t.Errorf("Unexpected error status, got error: %v, wantErr: %v", err, test.wantErr)
+			if test.wantErr && (err == nil) {
+				t.Errorf("Error expected, got: %v but err is nil", got)
 			}
 
 			if !test.wantErr && !cmp.Equal(got, test.expected) {
