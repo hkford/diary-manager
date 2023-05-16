@@ -6,50 +6,85 @@ import (
 	"mydiary/pkg/workspace"
 	"testing"
 
+	"github.com/google/go-cmp/cmp"
 	"github.com/spf13/afero"
 )
 
 func TestValidateInput(t *testing.T) {
-	var result error
-	_, result = ValidateInput(2000000)
-	if result == nil {
-		t.Errorf("ValidateInput failed at 2000000 %v", result)
+	tests := []struct {
+		name     string
+		input    int64
+		expected Date
+		wantErr  bool
+	}{
+		{
+			name:     "Input too small",
+			input:    2000000,
+			expected: Date{},
+			wantErr:  true,
+		},
+		{
+			name:     "Input too large",
+			input:    200000000,
+			expected: Date{},
+			wantErr:  true,
+		},
+		{
+			name:     "Month and Day invalid",
+			input:    20160000,
+			expected: Date{},
+			wantErr:  true,
+		},
+		{
+			name:     "Too large Day length",
+			input:    20170140,
+			expected: Date{},
+			wantErr:  true,
+		},
+		{
+			name:     "Too large Month",
+			input:    20171300,
+			expected: Date{},
+			wantErr:  true,
+		},
+		{
+			name:     "Day invalid",
+			input:    20170100,
+			expected: Date{},
+			wantErr:  true,
+		},
+		{
+			name:     "Day invalid for January",
+			input:    20170132,
+			expected: Date{},
+			wantErr:  true,
+		},
+		{
+			name:     "Day invalid for Feburuary",
+			input:    20200230,
+			expected: Date{},
+			wantErr:  true,
+		},
+		{
+			name:     "Valid",
+			input:    20200229,
+			expected: Date{2020, 2, 29},
+			wantErr:  false,
+		},
 	}
-	_, result = ValidateInput(200000000)
-	if result == nil {
-		t.Errorf("ValidateInput failed at 200000000 %v", result)
-	}
-	_, result = ValidateInput(20160000)
-	if result == nil {
-		t.Errorf("ValidateInput failed at 20160000 %v", result)
-	}
-	_, result = ValidateInput(20170000)
-	if result == nil {
-		t.Errorf("ValidateInput failed at 20170000 %v", result)
-	}
-	_, result = ValidateInput(20171300)
-	if result == nil {
-		t.Errorf("ValidateInput failed at 20171300 %v", result)
-	}
-	_, result = ValidateInput(20170100)
-	if result == nil {
-		t.Errorf("ValidateInput failed at 20170100 %v", result)
-	}
-	_, result = ValidateInput(20170132)
-	if result == nil {
-		t.Errorf("ValidateInput failed at 20170131 %v", result)
-	}
-	_, result = ValidateInput(20200230)
-	if result == nil {
-		t.Errorf("ValidateInput failed at 20200230 %v", result)
-	}
-	date, result := ValidateInput(20200229)
-	expected := Date{2020, 2, 29}
-	if result != nil {
-		t.Errorf("ValidateInput failed at 20200229 %v", result)
-	}
-	if date != expected {
-		t.Errorf("ValidateInput expects %v but %v", expected, date)
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			got, err := ValidateInput(test.input)
+
+			if test.wantErr && (err != nil) {
+				t.Errorf("Unexpected error status, got error: %v, wantErr: %v", err, test.wantErr)
+			}
+
+			if !test.wantErr && !cmp.Equal(got, test.expected) {
+				t.Errorf("Unexpected date, got: %v, expected: %v", got, test.expected)
+			}
+		})
 	}
 }
 
