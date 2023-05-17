@@ -89,8 +89,6 @@ func TestValidateInput(t *testing.T) {
 }
 
 func TestIsDiaryFileExists(t *testing.T) {
-	var result bool
-	var date Date
 	fs := afero.NewMemMapFs()
 	ws := workspace.Workspace{
 		DiaryDir: "2020",
@@ -106,20 +104,38 @@ func TestIsDiaryFileExists(t *testing.T) {
 	if err != nil {
 		t.Fatal("failed Create month template")
 	}
-	date = Date{2020, 1, 29}
-	result = IsDiaryFileExists(ws, date)
-	if result != true {
-		t.Errorf("diaries/2020/202001.txt should exist")
+	tests := []struct {
+		name     string
+		date     Date
+		expected bool
+	}{
+		{
+			name:     "January should exist",
+			date:     Date{2020, 1, 29},
+			expected: true,
+		},
+		{
+			name:     "March should not exist",
+			date:     Date{2020, 3, 1},
+			expected: false,
+		},
+		{
+			name:     "2021 should not exist",
+			date:     Date{2021, 3, 1},
+			expected: false,
+		},
 	}
-	date = Date{2020, 3, 1}
-	result = IsDiaryFileExists(ws, date)
-	if result != false {
-		t.Errorf("diaries/2020/202003.txt should not exist")
-	}
-	date = Date{2021, 2, 4}
-	result = IsDiaryFileExists(ws, date)
-	if result != false {
-		t.Errorf("diaries/2021/202102.txt should not exist")
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			got, err := IsDiaryFileExists(ws, test.date)
+
+			if err != nil {
+				t.Errorf("IsDiaryFileExists raised error: %v", err)
+			}
+			if got != test.expected {
+				t.Errorf("Unexpected, got: %v, expected: %v", got, test.expected)
+			}
+		})
 	}
 }
 

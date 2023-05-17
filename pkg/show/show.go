@@ -52,20 +52,20 @@ func ValidateInput(x int64) (date Date, err error) {
 	return date, nil
 }
 
-func IsDiaryFileExists(ws workspace.Workspace, date Date) bool {
+func IsDiaryFileExists(ws workspace.Workspace, date Date) (bool, error) {
 	filename := fmt.Sprintf("diaries/%v/%v%02v.txt", date.Y, date.Y, date.M)
 	isDiaryExist, err := afero.Exists(ws.Fs, filename)
 	if err != nil {
-		fmt.Println("Failed to run afero.Exists")
+		return false, fmt.Errorf("Failed to run afero.Exists: *PathError %v\n", err)
 	}
-	return isDiaryExist
+	return isDiaryExist, nil
 }
 
 func GetDiary(ws workspace.Workspace, date Date) (string, error) {
 	filename := fmt.Sprintf("diaries/%v/%v%02v.txt", date.Y, date.Y, date.M)
 	diaryOfMonth, err := afero.ReadFile(ws.Fs, filename)
 	if err != nil {
-		fmt.Println("Failed to run afero.Readfile")
+		return "", fmt.Errorf("Failed to run afero.ReadFile: *PathError %v\n", err)
 	}
 	diaryOfDay, err := extractDiary(string(diaryOfMonth), date)
 	return diaryOfDay, err
@@ -79,5 +79,5 @@ func extractDiary(sentences string, date Date) (string, error) {
 			return sentence, nil
 		}
 	}
-	return "", fmt.Errorf("Could not find diary specified date")
+	return "", fmt.Errorf("Could not extract diary of specified date")
 }

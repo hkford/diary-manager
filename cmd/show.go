@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 	"mydiary/pkg/show"
 	"mydiary/pkg/util"
 	"mydiary/pkg/workspace"
@@ -24,7 +25,7 @@ $ mydiary show --date 20200101`,
 			var AppFs = afero.NewOsFs()
 			date, err := show.ValidateInput(date)
 			if err != nil {
-				fmt.Printf("Invalid argument: %v", err)
+				log.Fatalf("Invalid argument: %v\n", err)
 			}
 			isLeap := util.IsLeapYear(date.Y)
 			ws := workspace.Workspace{
@@ -32,11 +33,14 @@ $ mydiary show --date 20200101`,
 				IsLeap:   isLeap,
 				Fs:       &afero.Afero{Fs: AppFs},
 			}
-			isFileExist := show.IsDiaryFileExists(ws, date)
+			isFileExist, err := show.IsDiaryFileExists(ws, date)
+			if err != nil {
+				log.Fatalf("Diary file does not exists: %v\n", err)
+			}
 			if isFileExist {
 				diary, err := show.GetDiary(ws, date)
 				if err != nil {
-					fmt.Printf("Failed to get diary: %v", err)
+					log.Fatalf("Failed to get diary: %v\n", err)
 				}
 				fmt.Println(diary)
 			} else {
