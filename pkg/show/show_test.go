@@ -74,7 +74,9 @@ func TestValidateInput(t *testing.T) {
 	}
 
 	for _, test := range tests {
+		test := test
 		t.Run(test.name, func(t *testing.T) {
+			t.Parallel()
 			got, err := ValidateInput(test.input)
 
 			if test.wantErr && (err == nil) {
@@ -126,7 +128,9 @@ func TestIsDiaryFileExists(t *testing.T) {
 		},
 	}
 	for _, test := range tests {
+		test := test
 		t.Run(test.name, func(t *testing.T) {
+			t.Parallel()
 			got, err := IsDiaryFileExists(ws, test.date)
 
 			if err != nil {
