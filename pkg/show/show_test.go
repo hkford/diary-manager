@@ -1,8 +1,8 @@
 package show
 
 import (
+	"fmt"
 	"mydiary/pkg/initialize"
-	"mydiary/pkg/util"
 	"mydiary/pkg/workspace"
 	"testing"
 
@@ -66,9 +66,21 @@ func TestValidateInput(t *testing.T) {
 			wantErr:  true,
 		},
 		{
-			name:     "Valid",
+			name:     "Day invalid for not leap year Feburuary",
+			input:    20210229,
+			expected: Date{},
+			wantErr:  true,
+		},
+		{
+			name:     "Valid for leap year Feburuary",
 			input:    20200229,
 			expected: Date{2020, 2, 29},
+			wantErr:  false,
+		},
+		{
+			name:     "Valid for April",
+			input:    20220421,
+			expected: Date{2022, 4, 21},
 			wantErr:  false,
 		},
 	}
@@ -90,7 +102,7 @@ func TestValidateInput(t *testing.T) {
 	}
 }
 
-func TestIsDiaryFileExists(t *testing.T) {
+func setupTestWorkspace() (workspace.Workspace, error) {
 	fs := afero.NewMemMapFs()
 	ws := workspace.Workspace{
 		DiaryDir: "2020",
@@ -100,11 +112,21 @@ func TestIsDiaryFileExists(t *testing.T) {
 
 	err := ws.Create()
 	if err != nil {
-		t.Fatal("failed Create workspace")
+		err = fmt.Errorf("failed to create 2020 workspace: %v", err)
+		return ws, err
 	}
 	err = initialize.WriteMonthTemplate(ws, int64(1))
 	if err != nil {
-		t.Fatal("failed Create month template")
+		err = fmt.Errorf("failed to create January template: %v", err)
+		return ws, err
+	}
+	return ws, nil
+}
+
+func TestIsDiaryFileExists(t *testing.T) {
+	ws, err := setupTestWorkspace()
+	if err != nil {
+		t.Errorf("TestIsDiaryFileExists failed before executing test: %v", err)
 	}
 	tests := []struct {
 		name     string
@@ -143,40 +165,56 @@ func TestIsDiaryFileExists(t *testing.T) {
 	}
 }
 
-// Write test diary file of 2020/01
-func writeTestDiary(ws workspace.Workspace, t *testing.T) {
-	var template = make([]byte, 0, 700)
-	days := util.DayLengths[0]
-	diaryOfJanuary1st := "2020,January,01,Wed\nFirst diary.\n\n"
-	template = append(template, []byte(diaryOfJanuary1st)...)
-	for d := 2; d <= days; d++ {
-		dayFormat := initialize.GenerateDayFormat(2020, 1, int64(d))
-		template = append(template, []byte(dayFormat)...)
-	}
-	filename := "diaries/2020/202001.txt"
-	err := ws.Fs.WriteFile(filename, template, 0755)
-	if err != nil {
-		t.Fatal("failed to generate test diary")
-	}
-}
-
 func TestGetDiary(t *testing.T) {
-	var result string
-	fs := afero.NewMemMapFs()
-	ws := workspace.Workspace{
-		DiaryDir: "2020",
-		IsLeap:   true,
-		Fs:       &afero.Afero{Fs: fs},
-	}
-
-	err := ws.Create()
+	ws, err := setupTestWorkspace()
 	if err != nil {
-		t.Fatal("failed Create workspace")
+		t.Errorf("TestGetDiary failed before executing test: %v", err)
 	}
-	writeTestDiary(ws, t)
-	date := Date{2020, 1, 1}
-	result, _ = GetDiary(ws, date)
-	if result != "2020,January,01,Wed\nFirst diary." {
-		t.Errorf("Got wrong diary: %v", result)
+	tests := []struct {
+		name     string
+		date     Date
+		expected string
+		wantErr  bool
+	}{
+		{
+			name:     "January 1st",
+			date:     Date{2020, 1, 1},
+			expected: "2020,January,01,Wed",
+			wantErr:  false,
+		},
+		{
+			name:     "January 31th",
+			date:     Date{2020, 1, 31},
+			expected: "2020,January,31,Fri",
+			wantErr:  false,
+		},
+		{
+			name:     "Feburuary should not exist",
+			date:     Date{2020, 2, 1},
+			expected: "",
+			wantErr:  true,
+		},
+		{
+			name:     "2021 should not exist",
+			date:     Date{2021, 1, 1},
+			expected: "",
+			wantErr:  true,
+		},
+	}
+	for _, test := range tests {
+		test := test
+		t.Run(test.name, func(t *testing.T) {
+			t.Parallel()
+			got, err := GetDiary(ws, test.date)
+			if test.wantErr && err == nil {
+				t.Errorf("Should raise error at %v\n", test.date)
+			}
+			if !test.wantErr && err != nil {
+				t.Errorf("Raised error: %v", err)
+			}
+			if !test.wantErr && got != test.expected {
+				t.Errorf("Got wrong diary, got: %v, expected: %v", got, test.expected)
+			}
+		})
 	}
 }

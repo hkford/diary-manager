@@ -17,7 +17,7 @@ type Date struct {
 
 func ValidateInput(x int64) (date Date, err error) {
 	if x < 10000000 || x >= 100000000 {
-		return Date{0, 0, 0}, fmt.Errorf("input must be format like 20200101")
+		return Date{0, 0, 0}, fmt.Errorf("input must be format yyyyMMdd like 20200101")
 	}
 	y := x / 10000
 	m := (x % 10000) / 100
