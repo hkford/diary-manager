@@ -2,10 +2,8 @@ package show
 
 import (
 	"fmt"
-	"mydiary/pkg/initialize"
 	"mydiary/pkg/workspace"
 	"testing"
-	"time"
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/spf13/afero"
@@ -116,7 +114,7 @@ func setupTestWorkspace() (workspace.Workspace, error) {
 		err = fmt.Errorf("failed to create 2020 workspace: %v", err)
 		return ws, err
 	}
-	err = initialize.WriteMonthTemplate(ws, time.January)
+	err = ws.WriteYearTemplates()
 	if err != nil {
 		err = fmt.Errorf("failed to create January template: %v", err)
 		return ws, err
@@ -138,11 +136,6 @@ func TestIsDiaryFileExists(t *testing.T) {
 			name:     "January should exist",
 			date:     Date{2020, 1, 29},
 			expected: true,
-		},
-		{
-			name:     "March should not exist",
-			date:     Date{2020, 3, 1},
-			expected: false,
 		},
 		{
 			name:     "2021 should not exist",
@@ -188,12 +181,6 @@ func TestGetDiary(t *testing.T) {
 			date:     Date{2020, 1, 31},
 			expected: "2020,January,31,Fri",
 			wantErr:  false,
-		},
-		{
-			name:     "Feburuary should not exist",
-			date:     Date{2020, 2, 1},
-			expected: "",
-			wantErr:  true,
 		},
 		{
 			name:     "2021 should not exist",

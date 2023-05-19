@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"mydiary/pkg/initialize"
 	"mydiary/pkg/util"
 	"mydiary/pkg/workspace"
 	"strconv"
@@ -34,7 +33,7 @@ $ mydiary init --year 2020`,
 			if err != nil {
 				panic("Failed to create directory")
 			}
-			err = initialize.WriteYearTemplates(ws)
+			err = ws.WriteYearTemplates()
 			if err != nil {
 				err = ws.Delete()
 				if err != nil {
