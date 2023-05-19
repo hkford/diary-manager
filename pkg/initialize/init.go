@@ -8,11 +8,12 @@ import (
 	"mydiary/pkg/util"
 	"mydiary/pkg/workspace"
 	"strconv"
+	"time"
 )
 
 // Get Gregorian calendar date using Zeller's congruence
 // https://en.wikipedia.org/wiki/Zeller%27s_congruence
-func GetDate(y int64, m int64, d int64) string {
+func getDate(y int64, m int64, d int64) string {
 	// January and February are counted as months 13 and 14 of the previous year
 	if m <= 2 {
 		m += 12
@@ -28,16 +29,17 @@ func GetDate(y int64, m int64, d int64) string {
 	return util.Days[h]
 }
 
-func GenerateDayFormat(y int64, m int64, d int64) string {
-	f := fmt.Sprintf("%v,%v,%02v,%v\n\n", y, util.MonthNames[m-1], d, GetDate(y, m, d))
+func GenerateDayFormat(y int64, m time.Month, d int64) string {
+	f := fmt.Sprintf("%v,%v,%02v,%v\n\n", y, m, d, getDate(y, int64(m), d))
 	return f
 }
 
-func WriteMonthTemplate(ws workspace.Workspace, month int64) error {
+func WriteMonthTemplate(ws workspace.Workspace, month time.Month) error {
 	var template = make([]byte, 0, 700)
 	year, err := strconv.ParseInt(ws.DiaryDir, 10, 64)
 	if err != nil {
 		fmt.Println("Failed to parse DiaryDir into int64")
+		return err
 	}
 	days := util.DayLengths[month-1]
 	if ws.IsLeap && month == 2 {
@@ -47,14 +49,14 @@ func WriteMonthTemplate(ws workspace.Workspace, month int64) error {
 		dayFormat := GenerateDayFormat(year, month, int64(d))
 		template = append(template, []byte(dayFormat)...)
 	}
-	filename := fmt.Sprintf("diaries/%v/%v%02v.txt", ws.DiaryDir, ws.DiaryDir, strconv.FormatInt(month, 10))
+	filename := fmt.Sprintf("diaries/%v/%v%02v.txt", ws.DiaryDir, ws.DiaryDir, strconv.FormatInt(int64(month), 10))
 	err = ws.Fs.WriteFile(filename, template, 0755)
 	return err
 }
 
 func WriteYearTemplates(ws workspace.Workspace) error {
-	for m := 1; m <= 12; m++ {
-		err := WriteMonthTemplate(ws, int64(m))
+	for m := time.January; m <= time.December; m++ {
+		err := WriteMonthTemplate(ws, m)
 		if err != nil {
 			return err
 		}

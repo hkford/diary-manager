@@ -5,6 +5,7 @@ import (
 	"mydiary/pkg/util"
 	"mydiary/pkg/workspace"
 	"strings"
+	"time"
 
 	"github.com/spf13/afero"
 )
@@ -73,7 +74,7 @@ func GetDiary(ws workspace.Workspace, date Date) (string, error) {
 
 func extractDiary(sentences string, date Date) (string, error) {
 	sentencesArray := strings.Split(sentences, "\n\n")
-	dayFormat := fmt.Sprintf("%v,%v,%02v", date.Y, util.MonthNames[date.M-1], date.D)
+	dayFormat := fmt.Sprintf("%v,%v,%02v", date.Y, time.Month(date.M), date.D)
 	for _, sentence := range sentencesArray {
 		if strings.HasPrefix(sentence, dayFormat) {
 			return sentence, nil

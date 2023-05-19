@@ -3,17 +3,18 @@ package initialize
 import (
 	"mydiary/pkg/workspace"
 	"testing"
+	"time"
 
 	"github.com/spf13/afero"
 )
 
 func TestGetDate(t *testing.T) {
 	var result string
-	result = GetDate(2022, 1, 28)
+	result = getDate(2022, 1, 28)
 	if result != "Fri" {
 		t.Fatal("failed GetDate 2022/01/28")
 	}
-	result = GetDate(2020, 3, 9)
+	result = getDate(2020, 3, 9)
 	if result != "Mon" {
 		t.Fatal("failed GetDate 2020/03/09")
 	}
@@ -38,7 +39,7 @@ func TestWriteMonthTemplate(t *testing.T) {
 	if err != nil {
 		t.Fatal("failed Create workspace")
 	}
-	err = WriteMonthTemplate(ws, int64(1))
+	err = WriteMonthTemplate(ws, time.January)
 	if err != nil {
 		t.Fatal("failed Create month template")
 	}

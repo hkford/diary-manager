@@ -5,6 +5,7 @@ import (
 	"mydiary/pkg/initialize"
 	"mydiary/pkg/workspace"
 	"testing"
+	"time"
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/spf13/afero"
@@ -115,7 +116,7 @@ func setupTestWorkspace() (workspace.Workspace, error) {
 		err = fmt.Errorf("failed to create 2020 workspace: %v", err)
 		return ws, err
 	}
-	err = initialize.WriteMonthTemplate(ws, int64(1))
+	err = initialize.WriteMonthTemplate(ws, time.January)
 	if err != nil {
 		err = fmt.Errorf("failed to create January template: %v", err)
 		return ws, err
