@@ -17,26 +17,70 @@ func TestCreate(t *testing.T) {
 
 	err := ws.Create()
 	if err != nil {
-		t.Fatal("failed Create workspace")
+		t.Fatal("Failed to create workspace in TestCreate")
 	}
 }
 
 func TestGetDate(t *testing.T) {
-	var result string
-	result = getDate(2022, 1, 28)
-	if result != "Fri" {
-		t.Fatal("failed GetDate 2022/01/28")
+	tests := []struct {
+		name     string
+		year     int64
+		month    int64
+		day      int64
+		expected string
+	}{
+		{
+			name:     "2022/01/28 is Friday",
+			year:     2022,
+			month:    1,
+			day:      28,
+			expected: "Fri",
+		},
+		{
+			name:     "2023/05/24 is Wednesday",
+			year:     2023,
+			month:    5,
+			day:      24,
+			expected: "Wed",
+		},
 	}
-	result = getDate(2020, 3, 9)
-	if result != "Mon" {
-		t.Fatal("failed GetDate 2020/03/09")
+	for _, test := range tests {
+		test := test
+		t.Run(test.name, func(t *testing.T) {
+			t.Parallel()
+			got := getDate(test.year, test.month, test.day)
+			if got != test.expected {
+				t.Errorf("Unexpected, got: %v, expected: %v", got, test.expected)
+			}
+		})
 	}
 }
 
 func TestGenerateDayFormat(t *testing.T) {
-	result := generateDayFormat(2022, 1, 1)
-	if result != "2022,January,01,Sat\n\n" {
-		t.Fatal("failed GenerateDayformat(2022,1,1)")
+	tests := []struct {
+		name     string
+		year     int64
+		month    time.Month
+		day      int64
+		expected string
+	}{
+		{
+			name:     "2022/01/01 is Saturday",
+			year:     2022,
+			month:    time.January,
+			day:      1,
+			expected: "2022,January,01,Sat\n\n",
+		},
+	}
+	for _, test := range tests {
+		test := test
+		t.Run(test.name, func(t *testing.T) {
+			t.Parallel()
+			got := generateDayFormat(test.year, test.month, test.day)
+			if got != test.expected {
+				t.Errorf("Unexpected, got: %v, expected: %v", got, test.expected)
+			}
+		})
 	}
 }
 
@@ -50,14 +94,14 @@ func TestWriteMonthTemplate(t *testing.T) {
 
 	err := ws.Create()
 	if err != nil {
-		t.Fatal("failed Create workspace")
+		t.Fatal("Failed to create workspace in TestWriteMonthTemplate")
 	}
 	err = ws.writeMonthTemplate(time.January)
 	if err != nil {
-		t.Fatal("failed Create month template")
+		t.Fatal("Failed to write January diary template in TestWriteMonthTemplate")
 	}
 	_, err = fs.Open("diaries/2020/202001.txt")
 	if err != nil {
-		t.Fatal("Failed to write monthly template")
+		t.Errorf("Failed to open January diary template in TestWriteMonthTemplate\n")
 	}
 }
