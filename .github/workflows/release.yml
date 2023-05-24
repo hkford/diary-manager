@@ -7,8 +7,8 @@ on:
 
 jobs:
   test:
-    # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#example-using-an-action-in-the-same-repository-as-the-workflow
-    uses: ./.github/actions/unittest.yml
+    # https://github.com/orgs/community/discussions/50152?
+    uses: ./.github/workflows/unittest.yml
 
   release:
     needs: test
