@@ -7,7 +7,8 @@ on:
 
 jobs:
   test:
-    uses: ./unittest.yml
+    # https://github.blog/changelog/2022-01-25-github-actions-reusable-workflows-can-be-referenced-locally/
+    uses: ./.github/workflows/unittest.yml
 
   release:
     needs: test
