@@ -7,6 +7,8 @@ import (
 	"strconv"
 	"time"
 
+	"golang.org/x/sync/errgroup"
+
 	"github.com/spf13/afero"
 )
 
@@ -67,9 +69,12 @@ func (ws *Workspace) writeMonthTemplate(month time.Month) error {
 }
 
 func (ws *Workspace) WriteYearTemplates() error {
+	var g errgroup.Group
 	for m := time.January; m <= time.December; m++ {
-		err := ws.writeMonthTemplate(m)
-		if err != nil {
+		g.Go(func() error {
+			return ws.writeMonthTemplate(m)
+		})
+		if err := g.Wait(); err != nil {
 			return err
 		}
 	}

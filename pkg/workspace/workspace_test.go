@@ -84,7 +84,7 @@ func TestGenerateDayFormat(t *testing.T) {
 	}
 }
 
-func TestWriteMonthTemplate(t *testing.T) {
+func TestWriteYearTemplates(t *testing.T) {
 	fs := afero.NewMemMapFs()
 	ws := Workspace{
 		DiaryDir: "2020",
@@ -96,9 +96,9 @@ func TestWriteMonthTemplate(t *testing.T) {
 	if err != nil {
 		t.Fatal("Failed to create workspace in TestWriteMonthTemplate")
 	}
-	err = ws.writeMonthTemplate(time.January)
+	err = ws.WriteYearTemplates()
 	if err != nil {
-		t.Fatal("Failed to write January diary template in TestWriteMonthTemplate")
+		t.Fatal("Failed to write 2020 diary template in TestWriteMonthTemplate")
 	}
 	_, err = fs.Open("diaries/2020/202001.txt")
 	if err != nil {
