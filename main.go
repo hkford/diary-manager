@@ -6,8 +6,9 @@ package main
 
 import (
 	"fmt"
-	cli "mydiary/cmd"
 	"os"
+
+	cli "github.com/hkford/diary-manager/cmd"
 )
 
 func main() {

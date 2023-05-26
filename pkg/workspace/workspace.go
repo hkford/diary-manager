@@ -3,9 +3,10 @@ package workspace
 import (
 	"fmt"
 	"math"
-	"mydiary/pkg/util"
 	"strconv"
 	"time"
+
+	"github.com/hkford/diary-manager/pkg/util"
 
 	"golang.org/x/sync/errgroup"
 

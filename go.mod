@@ -1,4 +1,4 @@
-module mydiary
+module github.com/hkford/diary-manager
 
 go 1.17
 

@@ -2,10 +2,11 @@ package show
 
 import (
 	"fmt"
-	"mydiary/pkg/util"
-	"mydiary/pkg/workspace"
 	"strings"
 	"time"
+
+	"github.com/hkford/diary-manager/pkg/util"
+	"github.com/hkford/diary-manager/pkg/workspace"
 
 	"github.com/spf13/afero"
 )

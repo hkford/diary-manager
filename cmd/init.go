@@ -2,9 +2,10 @@ package cmd
 
 import (
 	"fmt"
-	"mydiary/pkg/util"
-	"mydiary/pkg/workspace"
 	"strconv"
+
+	"github.com/hkford/diary-manager/pkg/util"
+	"github.com/hkford/diary-manager/pkg/workspace"
 
 	"github.com/spf13/afero"
 	"github.com/spf13/cobra"

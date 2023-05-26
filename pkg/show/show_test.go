@@ -2,8 +2,9 @@ package show
 
 import (
 	"fmt"
-	"mydiary/pkg/workspace"
 	"testing"
+
+	"github.com/hkford/diary-manager/pkg/workspace"
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/spf13/afero"
